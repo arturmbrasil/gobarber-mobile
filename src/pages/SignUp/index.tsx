@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import api from '../../services/api';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -24,7 +25,7 @@ import logoImg from '../../assets/logo.png';
 
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
-interface SignInFormData {
+interface SignUpFormData {
   name: string;
   email: string;
   password: string;
@@ -46,21 +47,36 @@ const SignUp: React.FC = () => {
         email: Yup.string()
           .required('E-mail obrigatório')
           .email('Digite um e-mail válido'),
-        password: Yup.string().min(6, 'No mínimo 6 digitos'),
+        password: Yup.string().min(6, 'Senha no mínimo 6 digitos'),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      // await api.post('/users', data);
+      await api.post('/users', data);
 
-      // history.push('/');
+      Alert.alert(
+        'Cadastro realizado com sucesso!',
+        'Você já pode fazer login na aplicação.',
+      );
+
+      navigation.goBack();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = getValidationErrors(error);
 
         formRef.current?.setErrors(errors);
+
+        if (errors.name) {
+          Alert.alert('Erro no cadastro', errors.name);
+        }
+        if (errors.email) {
+          Alert.alert('Erro no cadastro', errors.email);
+        }
+        if (errors.password) {
+          Alert.alert('Erro no cadastro', errors.password);
+        }
 
         return;
       }
