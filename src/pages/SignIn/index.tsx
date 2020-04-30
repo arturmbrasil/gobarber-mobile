@@ -74,6 +74,10 @@ const SignIn: React.FC = () => {
 
           formRef.current?.setErrors(errors);
 
+          errors.email && Alert.alert('Erro no cadastro', errors.email);
+
+          errors.password && Alert.alert('Erro no cadastro', errors.password);
+
           return;
         }
 
